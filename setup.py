@@ -1,11 +1,12 @@
 from setuptools import setup
+from pyhedron import __version__, __author__
 
 setup(
     name='pyhedron',
-    version='0.1.0',    
+    version=__version__,    
     description='A Polyhedron implemented in Python',
     url='https://github.com/andreas-lehn/pyhedron',
-    author='Andreas Lehn',
+    author=__author__,
     author_email='andreas.lehn@icloud.com',
     license='MIT',
     packages=['pyhedron'],
