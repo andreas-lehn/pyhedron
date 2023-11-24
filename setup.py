@@ -12,7 +12,7 @@ setup(
     install_requires=[ 'numpy' ],
 
     classifiers=[
-        'Development Status :: Experimental',
+        'Development Status :: 2 - Pre-Alpha',
         'License :: OSI Approved :: MIT License',  
         'Programming Language :: Python :: 3',
     ],
