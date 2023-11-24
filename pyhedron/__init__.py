@@ -1,7 +1,15 @@
-""" A Polyhedron mesh realized as half edge structure """
+"""
+A Polyhedron implemented in Python
+
+Polyhedron is a mesh data structure realized as half edge implementation
+"""
 
 import sys
 import numpy as np
+
+__version__ = '0.1.0'
+__author__  = 'Andreas Lehn'
+
 
 class Polyhedron:
     EPSILON = 1e-6

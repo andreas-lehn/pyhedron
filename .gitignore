@@ -1,0 +1,7 @@
+.DS_Store
+bin
+build
+lib
+pyhedron.egg-info
+__pycache__
+pyvenv.cfg
