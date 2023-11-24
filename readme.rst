@@ -1,5 +1,5 @@
 ################################################
-Pyhedron - a polyhedron implementation in Python
+Pyhedron - a polyhedron implemented in Python
 #################################################
 
 There are a lot if implementations of Polyhedrons out there.
