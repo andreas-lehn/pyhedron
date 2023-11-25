@@ -5,7 +5,7 @@ Polyhedron is a mesh data structure realized as half edge implementation
 """
 
 __author__  = 'Andreas Lehn'
-from ._version import __version__
+from .version import __version__
 
 import sys
 import numpy as np
