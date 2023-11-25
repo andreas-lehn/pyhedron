@@ -1,0 +1,23 @@
+[project]
+name = "pyhedron"
+authors = [
+    { name = "Andras Lehn", email = "andreas.lehn@icloud.com" }
+]
+dynamic = [ "version" ]
+description = "Polyhedron implemented in pure Python"
+readme = "readme.rst"
+dependencies = [
+    "numnpy"
+]
+license = {file = "LICENSE"}
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "Programming Language :: Python"
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+path = "pyhedron/version.py"
