@@ -2,26 +2,21 @@ from setuptools import setup
 from pathlib import Path
 import gitversion
 
-NAME = 'pyhedron'
-AUTHOR = 'Andreas Lehn'
+PACKAGE = 'pyhedron'
 VERSION = gitversion.get()
-README = 'readme.rst'
-
-gitversion.create_version_file(NAME, VERSION)
-
-readme_file = Path(__file__).parent / "readme.rst"
+gitversion.create_version_file(PACKAGE, VERSION)
 
 setup(
-    name='pyhedron',
+    name=PACKAGE,
     version=VERSION,    
     description='A Polyhedron implemented in Python',
-    long_description=readme_file.read_text(),
+    long_description=(Path(__file__).parent / "readme.rst").read_text(),
     long_description_content_type='text/x-rst',
     url='https://github.com/andreas-lehn/pyhedron',
     author="Andreas Lehn",
     author_email='andreas.lehn@icloud.com',
     license='MIT',
-    packages=['pyhedron'],
+    packages=[PACKAGE],
     install_requires=[ 'numpy' ],
 
     classifiers=[
