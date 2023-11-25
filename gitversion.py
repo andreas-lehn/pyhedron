@@ -18,10 +18,10 @@ def get():
         if branch[0] == '*':
             branch = branch[2:].strip()
             parts = branch.split('/')
-            if parts[0] != 'release':
-                raise ValueError(f'branch "{branch}" is not a release branch')
-            else:
+            if parts[0] == 'release':
                 return parts[1]
+            else:
+                return'0.0.0'
 
 def create_version_file(dir, version):
     name = Path(dir) / '_version.py'
