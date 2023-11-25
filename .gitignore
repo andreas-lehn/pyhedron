@@ -6,3 +6,4 @@ pyhedron.egg-info
 __pycache__
 pyvenv.cfg
 dist
+.vscode

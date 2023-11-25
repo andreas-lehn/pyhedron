@@ -4,11 +4,11 @@ A Polyhedron implemented in Python
 Polyhedron is a mesh data structure realized as half edge implementation
 """
 
+__author__  = 'Andreas Lehn'
+from ._version import __version__
+
 import sys
 import numpy as np
-
-__version__ = '0.1.3'
-__author__  = 'Andreas Lehn'
 
 
 class Polyhedron:
