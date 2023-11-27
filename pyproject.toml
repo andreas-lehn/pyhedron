@@ -7,7 +7,7 @@ dynamic = [ "version" ]
 description = "Polyhedron implemented in pure Python"
 readme = "readme.rst"
 dependencies = [
-    "numnpy"
+    "numpy"
 ]
 license = {file = "LICENSE"}
 classifiers = [
