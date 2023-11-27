@@ -7,3 +7,5 @@ __pycache__
 pyvenv.cfg
 dist
 .vscode
+.venv
+.setup

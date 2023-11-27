@@ -1,9 +1,24 @@
-dist: setup.py readme.rst pyhedron/__init__.py Makefile LICENSE
-	python setup.py sdist
-	python setup.py bdist_wheel --universal
+.PHONY: dist
 
-upload:
-	twine upload dist/*
+all: dist
 
-check:
-	twine check dist/*
+.venv:
+	python -m venv --upgrade .
+	touch .venv
+
+.setup: .venv requirements.txt
+	./bin/pip install -r requirements.txt
+	touch .setup
+
+run:
+	./bin/python -m pyhedron
+
+clean:
+	rm -rf __pycache__
+	rm -rf pyhedron/__pycache__
+	rm dist/*
+	rm .venv
+	rm .setup
+
+dist: .setup pyproject.toml readme.rst pyhedron/__init__.py Makefile LICENSE
+	./bin/python -m build
