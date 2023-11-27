@@ -1,24 +1,23 @@
 .PHONY: dist run clean
 
-all: dist
+MODULE = pyhedron
+VENV = venv
+PYTHON = $(VENV)/bin/python
+PIP = $(VENV)/bin/pip
+TWINE = $(VENV)/bin/twine
 
-.venv:
-	python -m venv --upgrade .
-	touch .venv
+dist: pyproject.toml readme.rst pyhedron/__init__.py LICENSE $(VENV)/pyvenv.cfg
+	$(PYTHON) -m build
 
-.setup: .venv requirements.txt
-	./bin/pip install -r requirements.txt
-	touch .setup
-
-run:
-	./bin/python -m pyhedron
+run: $(VENV)/pyvenv.cfg
+	$(PYTHON) -m $(MODULE)
 
 clean:
 	rm -rf __pycache__
-	rm -rf pyhedron/__pycache__
-	rm dist/*
-	rm .venv
-	rm .setup
+	rm -rf $(MODULE)/__pycache__
+	rm -rf dist
+	rm -rf $(VENV)
 
-dist: .setup pyproject.toml readme.rst pyhedron/__init__.py Makefile LICENSE
-	./bin/python -m build
+$(VENV)/pyvenv.cfg: requirements.txt
+	python -m venv --prompt $(MODULE) --upgrade-deps venv
+	$(PIP) install -r requirements.txt

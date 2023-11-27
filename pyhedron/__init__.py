@@ -126,9 +126,9 @@ class Polyhedron:
         return self.point(np.array(self.points[index], copy=True))
     
     def edge_to_face(self, edge):
-        new_face = mesh.face()
-        new_edge = mesh.half_edge(edge.target, None, None, edge.opposite, new_face)
-        new_opposite = mesh.half_edge(edge.opposite.target, new_edge, new_edge, edge, new_face)
+        new_face = self.face()
+        new_edge = self.half_edge(edge.target, None, None, edge.opposite, new_face)
+        new_opposite = self.half_edge(edge.opposite.target, new_edge, new_edge, edge, new_face)
         new_opposite.update_neighbours()
         new_edge.update_neighbours()
         new_face.start = new_edge
@@ -251,26 +251,3 @@ class Polyhedron:
         for i in range(len(self.points)):
             print(f'[{i}]: {self.points[i]}')
         print()
-
-if __name__ == '__main__':
-    base_plate = [
-        (-1.0, -1.0, 0.0),
-        ( 1.0, -1.0, 0.0),
-        ( 1.0,  1.0, 0.0),
-        (-1.0,  1.0, 0.0)]
-
-    mesh = Polyhedron()
-    face, _ = mesh.poly_to_double_face(base_plate)
-    edge = mesh.edges[0]
-    opposite = edge.opposite
-    #mesh.loop_cut(face)
-    mesh.extrude(face, (0.0, 0.0, 1.0))
-    mesh.extrude(face, (0.0, 0.0, 0.5))
-    mesh.scale((0.5, 0.5, 1.0), face.points())
-    mesh.extrude(face, (0.0, 0.0, 0.5))
-    #mesh.edge_cut(face.start)
-    #mesh.translate((0.5, 0.0, 0.5), face.start.points())
-    #mesh.list_edges()
-    mesh.check_consistency()
-    
-    mesh.to_obj('pyhedron')
