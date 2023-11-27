@@ -1,4 +1,4 @@
-.PHONY: dist
+.PHONY: dist run clean
 
 all: dist
 
