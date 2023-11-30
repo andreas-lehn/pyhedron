@@ -1,7 +1,5 @@
 """
-A Polyhedron implemented in Python
-
-Polyhedron is a mesh data structure realized as half edge implementation
+pyhedron: a mesh data structure implemented with half edges
 """
 
 __author__  = 'Andreas Lehn'
@@ -10,9 +8,8 @@ from .version import __version__
 import sys
 import numpy as np
 
-
 class Polyhedron:
-    EPSILON = 1e-6
+    """ Polyhedron mesh realize with half edges """
 
     class Edge:
         def __init__(self, idx, target=None, previous=None, next=None, opposite=None, face=None):
@@ -77,13 +74,14 @@ class Polyhedron:
             return name
 
     def __init__(self):
-        """creates an empty  mesh"""
+        """creates a double face ot the points in poly or an empty mesh"""
         self.edges = []
         self.points = []
         self.faces = []
 
     def point(self, vec):
         """create a point in the list of points and returns its index"""
+        assert(len(vec) == 3)
         self.points.append(np.array(vec))
         return len(self.points) - 1
 
@@ -99,6 +97,7 @@ class Polyhedron:
 
     def make_double_face(self, vec):
         """ creates a double side face with only one point """
+        assert(len(vec) == 3)
         point = self.point(vec)
         edge = self.half_edge(point)
         mate = self.half_edge(point, opposite=edge)
@@ -113,19 +112,34 @@ class Polyhedron:
         mate.face = double
         return face, double
     
-    def poly_to_double_face(self, poly):
-        """ creates a double sided face out of the points (vectors) in poly"""
-        face, double = self.make_double_face(poly[0])
+    def make_poly_double_face(self, polygon):
+        """ creates a double sided face out of the points (vectors) in polygon"""
+        face, double = self.make_double_face(polygon[0])
         edge = face.start
-        for i in range(1, len(poly)):
+        for i in range(1, len(polygon)):
             edge = self.append_point(edge)
-            self.points[edge.target] = np.array(poly[i])
+            self.points[edge.target] = np.array(polygon[i])
         return face, double
 
+    def from_poly(polygon):
+        """ creates a polyhedron from the point (vectors) in polygon """
+        result = Polyhedron()
+        result.make_poly_double_face(polygon)
+        return result
+    
+    def from_extrude(polygon, vector):
+        """ creates a polyhedron form an extrusion of polygon (list of vectors) wiht vector """
+        result = Polyhedron()
+        face, _ = result.make_poly_double_face(polygon)
+        result.extrude(face, vector)
+        return result
+    
     def dup_point(self, index):
+        """ duplicates a point in the list of points """
         return self.point(np.array(self.points[index], copy=True))
     
     def edge_to_face(self, edge):
+        assert(isinstance(edge, Polyhedron.Edge))
         new_face = self.face()
         new_edge = self.half_edge(edge.target, None, None, edge.opposite, new_face)
         new_opposite = self.half_edge(edge.opposite.target, new_edge, new_edge, edge, new_face)
@@ -135,6 +149,7 @@ class Polyhedron:
         return new_edge
 
     def point_to_edge(self, edge):
+        assert(isinstance(edge, Polyhedron.Edge))
         opposite = edge.opposite
         new_point = self.dup_point(edge.target)
         new_edge = self.half_edge(edge.target, edge.next.opposite, edge.next.opposite.next, None, edge.next.opposite.face)
@@ -148,6 +163,7 @@ class Polyhedron:
         return new_edge
 
     def append_point(self, edge):
+        assert(isinstance(edge, Polyhedron.Edge))
         opposite = edge.opposite
         new_point = self.dup_point(edge.target)
         new_edge = self.half_edge(new_point, edge, edge.next, None, edge.face)
@@ -168,18 +184,21 @@ class Polyhedron:
             f(i)
 
     def translate(self, vec, points=None):
+        assert(len(vec) == 3)
         def add(self, i, vec):
-            self.points[i] += vec
+            self.points[i] += np.array(vec)
 
         self.apply_to_points(lambda i: add(self, i, vec), points)
 
     def scale(self, vec, points=None):
+        assert(len(vec) == 3)
         def mul(self, i, vec):
             self.points[i] *= vec
 
         self.apply_to_points(lambda i: mul(self, i, vec), points)
 
     def loop_cut(self, face):
+        assert(isinstance(face, Polyhedron.Face))
         for edge in face:
             self.edge_to_face(edge)
         
@@ -188,12 +207,14 @@ class Polyhedron:
         return face.start.opposite
 
     def split_face(self, edge):
+        assert(isinstance(edge, Polyhedron.Edge))
         result = self.edge_to_face(edge)
         self.point_to_edge(edge)
         self.point_to_edge(edge.previous)
         return edge
     
     def edge_cut(self, edge):
+        assert(isinstance(edge, Polyhedron.Edge))
         result = self.edge_to_face(edge)
         self.edge_to_face(edge.previous)
         self.edge_to_face(edge.next)
@@ -202,11 +223,14 @@ class Polyhedron:
         return edge
 
     def vertex_cut(self, edge):
+        assert(isinstance(edge, Polyhedron.Edge))
         result = self.edge_to_face(edge)
         self.edge_to_face(edge.next)
         self.point_to_edge(edge.next.opposite)
 
     def extrude(self, face, vec):
+        assert(isinstance(face, Polyhedron.Face))
+        assert(len(vec) == 3)
         self.loop_cut(face)
         self.translate(vec, face.points())
 
@@ -246,7 +270,6 @@ class Polyhedron:
         for face in self.faces:
             assert face.start.face == face, f'Face {str(face)}: start face check failed.'
 
-    
     def list_points(self):
         for i in range(len(self.points)):
             print(f'[{i}]: {self.points[i]}')
